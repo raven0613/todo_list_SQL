@@ -6,9 +6,17 @@ const db = require('../../models')
 const Todo = db.Todo
 const User = db.User
 
+
+
+//get 登入頁面
 router.get('/login', (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.redirect('/');
+  }
   res.render('login')
 })
+
+
 
 //登入功能
 router.post('/login', passport.authenticate('local' , {
@@ -16,7 +24,13 @@ router.post('/login', passport.authenticate('local' , {
   failureRedirect: '/users/login'
 }))
 
+
+
+//get 註冊頁面
 router.get('/register', (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.redirect('/');
+  }
   res.render('register')
 })
 
@@ -49,6 +63,9 @@ router.post('/register', (req, res) => {
 
 
 router.get('/logout', (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.redirect('/users/login');
+  }
   req.logout();
   res.redirect('/users/login');
 })
