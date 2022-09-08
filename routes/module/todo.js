@@ -46,7 +46,7 @@ router.put('/:id', (req, res) => {
       .catch(error => console.log(error))
 })
 
-//等等做認證再找 user
+
 //delete
 router.delete('/:id', (req, res) => {
   const id = req.params.id;

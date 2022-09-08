@@ -20,13 +20,15 @@ app.set('view engine', 'hbs')
 
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
-usePassport(app)
+
 
 app.use(session({
-  secret: process.envSESSION_SECRET,
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true
 }))
+usePassport(app)
+
 
 app.use(routes);
 
