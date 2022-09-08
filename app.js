@@ -1,10 +1,15 @@
 const express = require('express')
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
+const session = require('express-session')
 const usePassport = require('./config/passport')
 const exphbs = require('express-handlebars')
 const methodOverride = require('method-override')
-const bcrypt = require('bcryptjs')
 const app = express()
-const PORT = 3000
+const PORT = process.env.PORT;
 const routes = require('./routes');
 
 
@@ -16,6 +21,12 @@ app.set('view engine', 'hbs')
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 usePassport(app)
+
+app.use(session({
+  secret: process.envSESSION_SECRET,
+  resave: false,
+  saveUninitialized: true
+}))
 
 app.use(routes);
 
