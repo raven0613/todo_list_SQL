@@ -3,7 +3,7 @@ const router = express.Router();
 
 const db = require('../../models')
 const Todo = db.Todo
-const User = db.User
+
 
 
 //進入 new page
@@ -14,18 +14,22 @@ router.get('/new', (req, res) => {
 
 //進入 detail page
 router.get('/:id', (req, res) => {
-  const id = req.params.id
+  const id = req.params.id;
+  const UserId = req.user.id;
 
-  return Todo.findByPk(id)
+  return Todo.findOne({ where : { id , UserId }})
     .then(todo => res.render('detail', { todo: todo.toJSON() }))
     .catch(error => console.log(error))
 })
 
+
+
 //進入 edit page
 router.get('/:id/edit', (req, res) => {
   const id = req.params.id;
+  const UserId = req.user.id;
 
-  return Todo.findByPk(id)
+  return Todo.findOne({ where : { id , UserId }})
   .then(todo => {
     return res.render('edit' , {todo : todo.toJSON()});
   })
@@ -34,15 +38,16 @@ router.get('/:id/edit', (req, res) => {
 //put edit 結果
 router.put('/:id', (req, res) => {
   const id = req.params.id
+  const UserId = req.user.id;
   const {name , isDone} = req.body
 
-  return Todo.findByPk(id)
+  return Todo.findOne({ where : { id , UserId }})
       .then(todo => {
           todo.name = name
           todo.isDone = isDone === 'on'
           return todo.save()
       })
-      .then(() => res.redirect(`/todos/${id}`))
+      .then(() => res.redirect(`/`))
       .catch(error => console.log(error))
 })
 
@@ -50,8 +55,9 @@ router.put('/:id', (req, res) => {
 //delete
 router.delete('/:id', (req, res) => {
   const id = req.params.id;
+  const UserId = req.user.id;
 
-  return Todo.findByPk(id)
+  return Todo.findOne({ where : { id , UserId }})
       .then(todo => {
           todo.daletedAt = new Date()
           return todo.save()
