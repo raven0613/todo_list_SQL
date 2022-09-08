@@ -3,12 +3,24 @@ const router = express.Router();
 
 const db = require('../../models')
 const Todo = db.Todo
-
+const User = db.User
 
 
 //進入 new page
 router.get('/new', (req, res) => {
   return res.render('new');
+})
+
+//post new
+router.post('/' , (req , res) => {
+  const UserId = req.user.id;
+  const {name , isDone} = req.body;
+
+  return Todo.create({
+    name , isDone , UserId
+  })
+  .then(() => res.redirect(`/`))
+  .catch(error => console.log(error))
 })
 
 
@@ -59,10 +71,9 @@ router.delete('/:id', (req, res) => {
 
   return Todo.findOne({ where : { id , UserId }})
       .then(todo => {
-          todo.daletedAt = new Date()
-          return todo.save()
+          return todo.destroy();
       })
-  .then(() => res.redirect('/users/login'))
+  .then(() => res.redirect('/'))
   .catch(error => console.log(error))
     
 
